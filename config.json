@@ -1,0 +1,47 @@
+{
+    "debug": true, 
+    "httpServiceAddr": "0.0.0.0:8000", 
+    "concurrenceNum": 20, 
+    "defaultConnSize": 10, 
+    "maxConnSize": 60, 
+    "minIdleConnSize": 5, 
+    "StorageAddr":  "192.168.2.222:1111", 
+    "KafkaAddress": [
+        "192.168.2.224:9092"
+    ], 
+    "KafkaTopics": ["",""], 
+    "KafkaGroupID":"my-consumer-group-1",
+    "BatchSize": 10, 
+    "BatchIntv": 1,
+    "LoginTimeOut":1000,
+    "TimeZone":8,
+    "TaskConfig":"config.yml",
+    "ConsumerTag":"deepface_worker",
+    "WorkID":10,
+    "RedisAddr":"192.168.2.224:6379",
+    "DbBi":{
+        "DBAddr":"192.168.2.224", 
+        "DBPort":"5432",
+        "DBUser": "postgres", 
+        "DBPasswd": "123456", 
+        "database": "deepdata_bi"
+    },
+    "DbData":{
+        "DBAddr":"192.168.2.224", 
+        "DBPort":"5432",
+        "DBUser": "postgres", 
+        "DBPasswd": "123456", 
+        "database": "deepdata_dt_tspart"
+    },
+    "DbDeep":{
+        "DBAddr":"192.168.2.224", 
+        "DBPort":"5433",
+        "DBUser": "postgres", 
+        "DBPasswd": "123456", 
+        "database": "deepface_data"
+    },
+    "AuthTimeout": "24h",
+    "Tasks":{
+        "AbnormalGas":true
+    }
+}

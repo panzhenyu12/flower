@@ -7,8 +7,8 @@ import (
 	"github.com/Shopify/sarama"
 	cluster "github.com/bsm/sarama-cluster"
 	"github.com/golang/protobuf/proto"
-	systemconfig "github.com/panzhenyu12/flower/config"
-	"github.com/panzhenyu12/flower/pubsub"
+	systemconfig "flower/config"
+	"flower/pubsub"
 	"golang.org/x/net/context"
 )
 

@@ -175,6 +175,7 @@ type Cmdable interface {
 	XRead(a *XReadArgs) *XStreamSliceCmd
 	XReadStreams(streams ...string) *XStreamSliceCmd
 	XGroupCreate(stream, group, start string) *StatusCmd
+	XGroupCreateMkStream(stream, group, start string) *StatusCmd
 	XGroupSetID(stream, group, start string) *StatusCmd
 	XGroupDestroy(stream, group string) *IntCmd
 	XGroupDelConsumer(stream, group, consumer string) *IntCmd
@@ -231,6 +232,7 @@ type Cmdable interface {
 	ClientKillByFilter(keys ...string) *IntCmd
 	ClientList() *StringCmd
 	ClientPause(dur time.Duration) *BoolCmd
+	ClientID() *IntCmd
 	ConfigGet(parameter string) *SliceCmd
 	ConfigResetStat() *StatusCmd
 	ConfigSet(parameter, value string) *StatusCmd
@@ -268,6 +270,7 @@ type Cmdable interface {
 	ClusterResetHard() *StatusCmd
 	ClusterInfo() *StringCmd
 	ClusterKeySlot(key string) *IntCmd
+	ClusterGetKeysInSlot(slot int, count int) *StringSliceCmd
 	ClusterCountFailureReports(nodeID string) *IntCmd
 	ClusterCountKeysInSlot(slot int) *IntCmd
 	ClusterDelSlots(slots ...int) *StatusCmd
@@ -1423,6 +1426,12 @@ func (c *cmdable) XGroupCreate(stream, group, start string) *StatusCmd {
 	return cmd
 }
 
+func (c *cmdable) XGroupCreateMkStream(stream, group, start string) *StatusCmd {
+	cmd := NewStatusCmd("xgroup", "create", stream, group, start, "mkstream")
+	c.process(cmd)
+	return cmd
+}
+
 func (c *cmdable) XGroupSetID(stream, group, start string) *StatusCmd {
 	cmd := NewStatusCmd("xgroup", "setid", stream, group, start)
 	c.process(cmd)
@@ -1444,10 +1453,11 @@ func (c *cmdable) XGroupDelConsumer(stream, group, consumer string) *IntCmd {
 type XReadGroupArgs struct {
 	Group    string
 	Consumer string
-	Streams  []string
-	Count    int64
-	Block    time.Duration
-	NoAck    bool
+	// List of streams and ids.
+	Streams []string
+	Count   int64
+	Block   time.Duration
+	NoAck   bool
 }
 
 func (c *cmdable) XReadGroup(a *XReadGroupArgs) *XStreamSliceCmd {
@@ -2061,6 +2071,24 @@ func (c *cmdable) ClientPause(dur time.Duration) *BoolCmd {
 	return cmd
 }
 
+func (c *cmdable) ClientID() *IntCmd {
+	cmd := NewIntCmd("client", "id")
+	c.process(cmd)
+	return cmd
+}
+
+func (c *cmdable) ClientUnblock(id int64) *IntCmd {
+	cmd := NewIntCmd("client", "unblock", id)
+	c.process(cmd)
+	return cmd
+}
+
+func (c *cmdable) ClientUnblockWithError(id int64) *IntCmd {
+	cmd := NewIntCmd("client", "unblock", id, "error")
+	c.process(cmd)
+	return cmd
+}
+
 // ClientSetName assigns a name to the connection.
 func (c *statefulCmdable) ClientSetName(name string) *BoolCmd {
 	cmd := NewBoolCmd("client", "setname", name)
@@ -2372,6 +2400,12 @@ func (c *cmdable) ClusterInfo() *StringCmd {
 
 func (c *cmdable) ClusterKeySlot(key string) *IntCmd {
 	cmd := NewIntCmd("cluster", "keyslot", key)
+	c.process(cmd)
+	return cmd
+}
+
+func (c *cmdable) ClusterGetKeysInSlot(slot int, count int) *StringSliceCmd {
+	cmd := NewStringSliceCmd("cluster", "getkeysinslot", slot, count)
 	c.process(cmd)
 	return cmd
 }

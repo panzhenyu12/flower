@@ -4,8 +4,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/panzhenyu12/flower/entities"
-	"github.com/panzhenyu12/flower/model"
+	"flower/entities"
+	"flower/model"
 	"github.com/pkg/errors"
 )
 

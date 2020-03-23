@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/go-xorm/xorm"
-	"github.com/panzhenyu12/flower/common"
-	"github.com/panzhenyu12/flower/entities"
+	"flower/common"
+	"flower/entities"
 	"github.com/pkg/errors"
 )
 

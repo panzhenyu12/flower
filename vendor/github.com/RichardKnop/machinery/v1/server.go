@@ -21,10 +21,21 @@ import (
 // Server is the main Machinery object and stores all configuration
 // All the tasks workers process are registered against the server
 type Server struct {
-	config          *config.Config
-	registeredTasks map[string]interface{}
-	broker          brokersiface.Broker
-	backend         backendsiface.Backend
+	config            *config.Config
+	registeredTasks   map[string]interface{}
+	broker            brokersiface.Broker
+	backend           backendsiface.Backend
+	prePublishHandler func(*tasks.Signature)
+}
+
+// NewServerWithBrokerBackend ...
+func NewServerWithBrokerBackend(cnf *config.Config, brokerServer brokersiface.Broker, backendServer backendsiface.Backend) *Server {
+	return &Server{
+		config:          cnf,
+		registeredTasks: make(map[string]interface{}),
+		broker:          brokerServer,
+		backend:         backendServer,
+	}
 }
 
 // NewServer creates Server instance
@@ -37,15 +48,10 @@ func NewServer(cnf *config.Config) (*Server, error) {
 	// Backend is optional so we ignore the error
 	backend, _ := BackendFactory(cnf)
 
-	srv := &Server{
-		config:          cnf,
-		registeredTasks: make(map[string]interface{}),
-		broker:          broker,
-		backend:         backend,
-	}
+	srv := NewServerWithBrokerBackend(cnf, broker, backend)
 
 	// init for eager-mode
-	eager, ok := broker.(eager.EagerMode)
+	eager, ok := broker.(eager.Mode)
 	if ok {
 		// we don't have to call worker.Launch in eager mode
 		eager.AssignWorker(srv.NewWorker("eager", 0))
@@ -64,7 +70,7 @@ func (server *Server) NewWorker(consumerTag string, concurrency int) *Worker {
 	}
 }
 
-// NewWorker creates Worker instance with Custom Queue
+// NewCustomQueueWorker creates Worker instance with Custom Queue
 func (server *Server) NewCustomQueueWorker(consumerTag string, concurrency int, queue string) *Worker {
 	return &Worker{
 		server:      server,
@@ -102,6 +108,11 @@ func (server *Server) GetConfig() *config.Config {
 // SetConfig sets config
 func (server *Server) SetConfig(cnf *config.Config) {
 	server.config = cnf
+}
+
+// SetPreTaskHandler Sets pre publish handler
+func (server *Server) SetPreTaskHandler(handler func(*tasks.Signature)) {
+	server.prePublishHandler = handler
 }
 
 // RegisterTasks registers all tasks at once
@@ -149,12 +160,6 @@ func (server *Server) SendTaskWithContext(ctx context.Context, signature *tasks.
 	// tag the span with some info about the signature
 	signature.Headers = tracing.HeadersWithSpan(signature.Headers, span)
 
-	// Send it on to SendTask as normal
-	return server.SendTask(signature)
-}
-
-// SendTask publishes a task to the default queue
-func (server *Server) SendTask(signature *tasks.Signature) (*result.AsyncResult, error) {
 	// Make sure result backend is defined
 	if server.backend == nil {
 		return nil, errors.New("Result backend required")
@@ -171,11 +176,20 @@ func (server *Server) SendTask(signature *tasks.Signature) (*result.AsyncResult,
 		return nil, fmt.Errorf("Set state pending error: %s", err)
 	}
 
-	if err := server.broker.Publish(signature); err != nil {
+	if server.prePublishHandler != nil {
+		server.prePublishHandler(signature)
+	}
+
+	if err := server.broker.Publish(ctx, signature); err != nil {
 		return nil, fmt.Errorf("Publish message error: %s", err)
 	}
 
 	return result.NewAsyncResult(signature, server.backend), nil
+}
+
+// SendTask publishes a task to the default queue
+func (server *Server) SendTask(signature *tasks.Signature) (*result.AsyncResult, error) {
+	return server.SendTaskWithContext(context.Background(), signature)
 }
 
 // SendChainWithContext will inject the trace context in all the signature headers before publishing it
@@ -205,11 +219,6 @@ func (server *Server) SendGroupWithContext(ctx context.Context, group *tasks.Gro
 
 	tracing.AnnotateSpanWithGroupInfo(span, group, sendConcurrency)
 
-	return server.SendGroup(group, sendConcurrency)
-}
-
-// SendGroup triggers a group of parallel tasks
-func (server *Server) SendGroup(group *tasks.Group, sendConcurrency int) ([]*result.AsyncResult, error) {
 	// Make sure result backend is defined
 	if server.backend == nil {
 		return nil, errors.New("Result backend required")
@@ -250,7 +259,7 @@ func (server *Server) SendGroup(group *tasks.Group, sendConcurrency int) ([]*res
 
 			// Publish task
 
-			err := server.broker.Publish(s)
+			err := server.broker.Publish(ctx, s)
 
 			if sendConcurrency > 0 {
 				pool <- struct{}{}
@@ -279,6 +288,11 @@ func (server *Server) SendGroup(group *tasks.Group, sendConcurrency int) ([]*res
 	}
 }
 
+// SendGroup triggers a group of parallel tasks
+func (server *Server) SendGroup(group *tasks.Group, sendConcurrency int) ([]*result.AsyncResult, error) {
+	return server.SendGroupWithContext(context.Background(), group, sendConcurrency)
+}
+
 // SendChordWithContext will inject the trace context in all the signature headers before publishing it
 func (server *Server) SendChordWithContext(ctx context.Context, chord *tasks.Chord, sendConcurrency int) (*result.ChordAsyncResult, error) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "SendChord", tracing.ProducerOption(), tracing.MachineryTag, tracing.WorkflowChordTag)
@@ -286,12 +300,7 @@ func (server *Server) SendChordWithContext(ctx context.Context, chord *tasks.Cho
 
 	tracing.AnnotateSpanWithChordInfo(span, chord, sendConcurrency)
 
-	return server.SendChord(chord, sendConcurrency)
-}
-
-// SendChord triggers a group of parallel tasks with a callback
-func (server *Server) SendChord(chord *tasks.Chord, sendConcurrency int) (*result.ChordAsyncResult, error) {
-	_, err := server.SendGroup(chord.Group, sendConcurrency)
+	_, err := server.SendGroupWithContext(ctx, chord.Group, sendConcurrency)
 	if err != nil {
 		return nil, err
 	}
@@ -301,6 +310,11 @@ func (server *Server) SendChord(chord *tasks.Chord, sendConcurrency int) (*resul
 		chord.Callback,
 		server.backend,
 	), nil
+}
+
+// SendChord triggers a group of parallel tasks with a callback
+func (server *Server) SendChord(chord *tasks.Chord, sendConcurrency int) (*result.ChordAsyncResult, error) {
+	return server.SendChordWithContext(context.Background(), chord, sendConcurrency)
 }
 
 // GetRegisteredTaskNames returns slice of registered task names

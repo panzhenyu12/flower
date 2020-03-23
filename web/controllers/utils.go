@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/panzhenyu12/flower/entities"
+	"flower/entities"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
-	"github.com/panzhenyu12/flower/model"
+	"flower/model"
 	"github.com/pkg/errors"
 )
 

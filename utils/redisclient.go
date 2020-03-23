@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/golang/glog"
-	"github.com/panzhenyu12/flower/config"
+	"flower/config"
 )
 
 var rlock sync.Mutex

@@ -3,7 +3,7 @@ package repositories
 import (
 	"fmt"
 
-	"github.com/panzhenyu12/flower/model"
+	"flower/model"
 )
 
 func getTimeGroupSql(timestr string) string {

@@ -2,8 +2,8 @@ package model
 
 import (
 	"github.com/asaskevich/govalidator"
-	"github.com/panzhenyu12/flower/common"
-	"github.com/panzhenyu12/flower/entities"
+	"flower/common"
+	"flower/entities"
 )
 
 type OilStatsRequest struct {

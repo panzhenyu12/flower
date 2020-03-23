@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/panzhenyu12/flower/config"
+	"flower/config"
 )
 
 func WaitForExit() os.Signal {

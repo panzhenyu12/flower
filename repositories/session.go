@@ -7,8 +7,8 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/go-xorm/xorm"
-	"github.com/panzhenyu12/flower/common"
-	"github.com/panzhenyu12/flower/model"
+	"flower/common"
+	"flower/model"
 	"github.com/pkg/errors"
 )
 

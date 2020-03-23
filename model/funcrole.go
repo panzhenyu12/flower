@@ -3,10 +3,10 @@ package model
 import (
 	"fmt"
 
-	"github.com/panzhenyu12/flower/utils"
+	"flower/utils"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/panzhenyu12/flower/entities"
+	"flower/entities"
 	"github.com/pkg/errors"
 )
 

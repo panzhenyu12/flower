@@ -8,8 +8,8 @@ import (
 	"github.com/RichardKnop/machinery/v1/config"
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/golang/glog"
-	localconfig "github.com/panzhenyu12/flower/config"
-	"github.com/panzhenyu12/flower/job/jobs"
+	localconfig "flower/config"
+	"flower/job/jobs"
 	"github.com/pkg/errors"
 )
 

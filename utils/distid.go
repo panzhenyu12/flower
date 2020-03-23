@@ -5,7 +5,7 @@ import (
 
 	"github.com/golang/glog"
 
-	"github.com/panzhenyu12/flower/config"
+	"flower/config"
 
 	"github.com/bwmarrin/snowflake"
 )

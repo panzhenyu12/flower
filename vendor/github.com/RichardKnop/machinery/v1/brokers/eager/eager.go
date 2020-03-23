@@ -2,6 +2,7 @@ package eager
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -22,8 +23,8 @@ func New() iface.Broker {
 	return new(Broker)
 }
 
-// EagerMode interface with methods specific for this broker
-type EagerMode interface {
+// Mode interface with methods specific for this broker
+type Mode interface {
 	AssignWorker(p iface.TaskProcessor)
 }
 
@@ -38,7 +39,7 @@ func (eagerBroker *Broker) StopConsuming() {
 }
 
 // Publish places a new message on the default queue
-func (eagerBroker *Broker) Publish(task *tasks.Signature) error {
+func (eagerBroker *Broker) Publish(ctx context.Context, task *tasks.Signature) error {
 	if eagerBroker.worker == nil {
 		return errors.New("worker is not assigned in eager-mode")
 	}
@@ -59,11 +60,6 @@ func (eagerBroker *Broker) Publish(task *tasks.Signature) error {
 
 	// blocking call to the task directly
 	return eagerBroker.worker.Process(signature)
-}
-
-// GetPendingTasks returns a slice of task.Signatures waiting in the queue
-func (eagerBroker *Broker) GetPendingTasks(queue string) ([]*tasks.Signature, error) {
-	return []*tasks.Signature{}, errors.New("Not implemented")
 }
 
 // AssignWorker assigns a worker to the eager broker

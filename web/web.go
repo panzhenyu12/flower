@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/panzhenyu12/flower/config"
-	"github.com/panzhenyu12/flower/web/controllers"
-	"github.com/panzhenyu12/flower/web/routers"
+	"flower/config"
+	"flower/web/controllers"
+	"flower/web/routers"
 )
 
 func main() {

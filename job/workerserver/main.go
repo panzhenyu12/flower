@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/golang/glog"
-	"github.com/panzhenyu12/flower/job"
+	"flower/job"
 )
 
 func main() {

@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"os"
 
+	"flower/config"
+	"flower/job"
+	"flower/job/cron"
+	"flower/utils"
+	"flower/web/controllers"
+	"flower/web/routers"
+
 	"github.com/golang/glog"
-	"github.com/panzhenyu12/flower/config"
-	"github.com/panzhenyu12/flower/job"
-	"github.com/panzhenyu12/flower/job/cron"
-	"github.com/panzhenyu12/flower/utils"
-	"github.com/panzhenyu12/flower/web/controllers"
-	"github.com/panzhenyu12/flower/web/routers"
 )
 
 var (

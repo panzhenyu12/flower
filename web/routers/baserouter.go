@@ -2,8 +2,8 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/panzhenyu12/flower/web/controllers"
-	"github.com/panzhenyu12/flower/web/middlewares"
+	"flower/web/controllers"
+	"flower/web/middlewares"
 )
 
 type Router struct {

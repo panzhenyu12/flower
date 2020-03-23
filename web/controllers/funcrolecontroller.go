@@ -7,10 +7,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
-	"github.com/panzhenyu12/flower/common"
-	"github.com/panzhenyu12/flower/model"
-	"github.com/panzhenyu12/flower/repositories"
-	"github.com/panzhenyu12/flower/utils"
+	"flower/common"
+	"flower/model"
+	"flower/repositories"
+	"flower/utils"
 	"github.com/pkg/errors"
 )
 

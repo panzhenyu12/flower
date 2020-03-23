@@ -5,16 +5,16 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/panzhenyu12/flower/entities"
+	"flower/entities"
 
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 
 	"github.com/gin-gonic/gin"
-	"github.com/panzhenyu12/flower/common"
-	"github.com/panzhenyu12/flower/model"
-	"github.com/panzhenyu12/flower/repositories"
-	"github.com/panzhenyu12/flower/utils"
+	"flower/common"
+	"flower/model"
+	"flower/repositories"
+	"flower/utils"
 )
 
 func (controller *Controller) GetCurrentUser(ctx *gin.Context) {

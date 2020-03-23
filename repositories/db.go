@@ -8,8 +8,8 @@ import (
 	"github.com/go-xorm/xorm"
 	"github.com/golang/glog"
 	_ "github.com/lib/pq"
-	"github.com/panzhenyu12/flower/common"
-	"github.com/panzhenyu12/flower/config"
+	"flower/common"
+	"flower/config"
 )
 
 type DB struct {
@@ -22,7 +22,6 @@ func (session *DB) Builder() *Builder {
 }
 func (DB *DB) GetNewSession() *Session {
 	session := DB.Engine.NewSession()
-	session.SetAutoClose()
 	return &Session{
 		Session: session,
 		engine:  DB.Engine,

@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/golang/glog"
-	//"github.com/panzhenyu12/flower/common"
-	"github.com/panzhenyu12/flower/entities"
-	"github.com/panzhenyu12/flower/model"
-	"github.com/panzhenyu12/flower/utils"
+	//"flower/common"
+	"flower/entities"
+	"flower/model"
+	"flower/utils"
 )
 
 type StatisticDal struct {

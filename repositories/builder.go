@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/go-xorm/builder"
-	"github.com/panzhenyu12/flower/model"
+	"flower/model"
 )
 
 type Builder struct {

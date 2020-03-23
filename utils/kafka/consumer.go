@@ -6,7 +6,7 @@ import (
 	"github.com/Shopify/sarama"
 	cluster "github.com/bsm/sarama-cluster"
 	"github.com/golang/glog"
-	systemconfig "github.com/panzhenyu12/flower/config"
+	systemconfig "flower/config"
 	"github.com/pkg/errors"
 )
 

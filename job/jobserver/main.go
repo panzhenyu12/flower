@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/golang/glog"
-	"github.com/panzhenyu12/flower/config"
-	"github.com/panzhenyu12/flower/job/cron"
-	"github.com/panzhenyu12/flower/utils"
+	"flower/config"
+	"flower/job/cron"
+	"flower/utils"
 )
 
 func main() {

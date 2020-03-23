@@ -22,7 +22,7 @@ func (h Headers) Set(key, val string) {
 	h[key] = val
 }
 
-// ForEachKey on Headers implements opentracing.TextMapReader for trace propagation.
+// ForeachKey on Headers implements opentracing.TextMapReader for trace propagation.
 // It is essentially the same as the opentracing.TextMapReader implementation except
 // for the added casting from interface{} to string.
 func (h Headers) ForeachKey(handler func(key, val string) error) error {
@@ -51,12 +51,23 @@ type Signature struct {
 	GroupTaskCount int
 	Args           []Arg
 	Headers        Headers
+	Priority       uint8
 	Immutable      bool
 	RetryCount     int
 	RetryTimeout   int
 	OnSuccess      []*Signature
 	OnError        []*Signature
 	ChordCallback  *Signature
+	//MessageGroupId for Broker, e.g. SQS
+	BrokerMessageGroupId string
+	//ReceiptHandle of SQS Message
+	SQSReceiptHandle string
+	// StopTaskDeletionOnError used with sqs when we want to send failed messages to dlq, 
+  // and don't want machinery to delete from source queue
+	StopTaskDeletionOnError bool
+	// IgnoreWhenTaskNotRegistered auto removes the request when there is no handeler available
+	// When this is true a task with no handler will be ignored and not placed back in the queue
+	IgnoreWhenTaskNotRegistered bool
 }
 
 // NewSignature creates a new task signature

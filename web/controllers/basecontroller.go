@@ -6,9 +6,9 @@ import (
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	"github.com/panzhenyu12/flower/config"
-	"github.com/panzhenyu12/flower/job"
-	"github.com/panzhenyu12/flower/utils"
+	"flower/config"
+	"flower/job"
+	"flower/utils"
 )
 
 type PicStruct struct {

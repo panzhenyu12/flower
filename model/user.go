@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/panzhenyu12/flower/entities"
-	"github.com/panzhenyu12/flower/utils"
+	"flower/entities"
+	"flower/utils"
 	"github.com/pkg/errors"
 )
 

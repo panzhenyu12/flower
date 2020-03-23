@@ -12,3 +12,5 @@
 *.out
 flower
 debug
+.vscode
+__debug_bin
